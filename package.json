@@ -1,0 +1,14 @@
+{
+  "name": "gcloudfunction-sendmail",
+  "version": "1.0.0",
+  "description": "Send emails with SendGrid from Google Cloud",
+  "author": "Diego Perez <dperezmartinez@gmail.com>",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^6.3.1"
+  }
+}
