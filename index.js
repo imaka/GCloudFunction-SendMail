@@ -5,16 +5,36 @@
  * @param {!express:Response} res HTTP response context.
  */
 exports.sendMail = (req, res) => {
-  const sgMail = require("@sendgrid/mail");
-  sgMail.setApiKey(process.env.SG_API_KEY);
-  const msg = {
-    to: req.body.to,
-    from: req.body.from,
+  if (!req.body.subject || !req.body.text) {
+    console.error("Nothing to send!");
+    res.status(500).end();
+    return;
+  }
+
+  const nodeMailer = require("nodemailer");
+
+  const transporter = nodeMailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      type: "OAuth2",
+      user: process.env.GMAIL_ADDRESS,
+      serviceClient: process.env.CLIENT_ID,
+      privateKey: process.env.PRIVATE_KEY.replace(/\\n/g, "\n")
+    }
+  });
+
+  const mailOptions = {
+    from: req.body.from || process.env.MAIL_FROM,
+    to: req.body.to || process.env.MAIL_TO,
+    bcc: req.body.bcc || process.env.MAIL_BCC,
     subject: req.body.subject,
     text: req.body.text
   };
-  sgMail
-    .send(msg)
+
+  transporter
+    .sendMail(mailOptions)
     .then(() => {
       res
         .status(200)
