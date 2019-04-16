@@ -5,6 +5,7 @@
  * @param {!express:Response} res HTTP response context.
  */
 exports.sendMail = (req, res) => {
+  console.info(request);
   if (!req.body.subject || !req.body.text) {
     console.error("Nothing to send!");
     res
