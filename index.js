@@ -12,7 +12,10 @@ exports.sendMail = (req, res) => {
 
   if (!req.body.subject || !req.body.text) {
     console.error("Nothing to send!");
-    res.status(422).end();
+    res
+      .status(422)
+      .send("Nothing to send!")
+      .end();
     return;
   }
 
