@@ -5,11 +5,6 @@
  * @param {!express:Response} res HTTP response context.
  */
 exports.sendMail = (req, res) => {
-  if (req.method !== "POST" || req.method !== "OPTIONS") {
-    res.status(405).end();
-    return;
-  }
-
   if (!req.body.subject || !req.body.text) {
     console.error("Nothing to send!");
     res
