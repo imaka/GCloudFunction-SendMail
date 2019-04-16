@@ -5,7 +5,7 @@
  * @param {!express:Response} res HTTP response context.
  */
 exports.sendMail = (req, res) => {
-  if (req.method !== "POST") {
+  if (req.method !== "POST" || req.method !== "OPTIONS") {
     res.status(405).end();
     return;
   }
