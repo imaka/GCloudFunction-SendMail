@@ -10,10 +10,7 @@ function handlePOST(req, res) {
 
   if (!req.body.subject || !req.body.text) {
     console.error("Nothing to send!");
-    res
-      .status(422)
-      .send({ error: "Nothing to send!" })
-      .end();
+    res.sendStatus(422);
     return;
   }
 
@@ -42,10 +39,7 @@ function handlePOST(req, res) {
   transporter
     .sendMail(mailOptions)
     .then(() => {
-      res
-        .status(200)
-        .send({ message: "Mail sent" })
-        .end();
+      res.status(200).end();
     })
     .catch(e => {
       console.error(e.toString());
@@ -70,7 +64,7 @@ function handleOPTIONS(req, res) {
   res.set("Access-Control-Allow-Methods", "POST");
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Max-Age", "3600");
-  res.status(204).send("");
+  res.sendStatus(204);
 }
 
 /**
@@ -88,7 +82,7 @@ exports.sendMail = (req, res) => {
       handlePOST(req, res);
       break;
     default:
-      res.status(405).send({ error: "Not allowed" });
+      res.sendStatus(405);
       break;
   }
 };
