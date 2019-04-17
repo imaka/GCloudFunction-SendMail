@@ -66,6 +66,7 @@ function handlePOST(req, res) {
  * @param {!express:Response} res HTTP response context.
  */
 function handleOPTIONS(req, res) {
+  res.set("Access-Control-Allow-Origin", "*");
   res.set("Access-Control-Allow-Methods", "POST");
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Max-Age", "3600");
@@ -79,8 +80,6 @@ function handleOPTIONS(req, res) {
  * @param {!express:Response} res HTTP response context.
  */
 exports.sendMail = (req, res) => {
-  res.set("Access-Control-Allow-Origin", "*");
-
   switch (req.method) {
     case "OPTIONS":
       handleOPTIONS(req, res);
