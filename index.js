@@ -9,8 +9,7 @@ function handlePOST(req, res) {
   res.set("Access-Control-Allow-Origin", "*");
 
   if (!req.body.subject || !req.body.text) {
-    console.error("Nothing to send!");
-    res.sendStatus(422);
+    res.status(422).send({ error: "Missing arguments" });
     return;
   }
 
@@ -42,7 +41,6 @@ function handlePOST(req, res) {
       res.status(200).end();
     })
     .catch(e => {
-      console.error(e.toString());
       res
         .status(500)
         .send({ error: e.toString() })
@@ -64,7 +62,7 @@ function handleOPTIONS(req, res) {
   res.set("Access-Control-Allow-Methods", "POST");
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Max-Age", "3600");
-  res.sendStatus(204);
+  res.status(204).end();
 }
 
 /**
@@ -82,7 +80,7 @@ exports.sendMail = (req, res) => {
       handlePOST(req, res);
       break;
     default:
-      res.sendStatus(405);
+      res.status(405).send({ error: "Wrong HTTP method" });
       break;
   }
 };
