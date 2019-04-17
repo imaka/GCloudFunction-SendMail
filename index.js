@@ -1,16 +1,18 @@
 /**
- * Responds to any HTTP request.
+ * Sends an email using Nodemailer and data from the request
+ * and environment variables.
  *
  * @param {!express:Request} req HTTP request context.
  * @param {!express:Response} res HTTP response context.
  */
-exports.sendMail = (req, res) => {
-  console.info(request);
+function handlePOST(req, res) {
+  res.set("Access-Control-Allow-Origin", "*");
+
   if (!req.body.subject || !req.body.text) {
     console.error("Nothing to send!");
     res
       .status(422)
-      .send("Nothing to send!")
+      .send({ error: "Nothing to send!" })
       .end();
     return;
   }
@@ -42,11 +44,52 @@ exports.sendMail = (req, res) => {
     .then(() => {
       res
         .status(200)
-        .send("Mail sent")
+        .send({ message: "Mail sent" })
         .end();
     })
     .catch(e => {
       console.error(e.toString());
-      res.status(500).end();
+      res
+        .status(500)
+        .send({ error: e.toString() })
+        .end();
     });
+}
+
+/**
+ * Send response to OPTIONS requests
+   Set CORS headers for preflight requests
+   Allows POSTs from any origin with the Content-Type header
+   and caches preflight response for 3600s
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+function handleOPTIONS(req, res) {
+  res.set("Access-Control-Allow-Methods", "POST");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
+  res.set("Access-Control-Max-Age", "3600");
+  res.status(204).send("");
+}
+
+/**
+ * Responds only to OPTIONS or POST requests.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+exports.sendMail = (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+
+  switch (req.method) {
+    case "OPTIONS":
+      handleOPTIONS(req, res);
+      break;
+    case "POST":
+      handlePOST(req, res);
+      break;
+    default:
+      res.status(405).send({ error: "Not allowed" });
+      break;
+  }
 };
