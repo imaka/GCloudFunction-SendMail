@@ -9,7 +9,12 @@ function handlePOST(req, res) {
   res.set("Access-Control-Allow-Origin", "*");
 
   if (!req.body.subject || !req.body.text) {
-    res.status(422).send({ error: "Missing arguments" });
+    res.status(422).send({
+      error: {
+        code: 422,
+        message: "Missing arguments"
+      }
+    });
     return;
   }
 
@@ -38,13 +43,20 @@ function handlePOST(req, res) {
   transporter
     .sendMail(mailOptions)
     .then(() => {
-      res.status(200).end();
+      res.status(200).send({
+        data: {
+          code: 200,
+          message: "Mail sent"
+        }
+      });
     })
     .catch(e => {
-      res
-        .status(500)
-        .send({ error: e.toString() })
-        .end();
+      res.status(500).send({
+        error: {
+          code: 500,
+          message: e.toString()
+        }
+      });
     });
 }
 
@@ -80,7 +92,12 @@ exports.sendMail = (req, res) => {
       handlePOST(req, res);
       break;
     default:
-      res.status(405).send({ error: "Wrong HTTP method" });
+      res.status(405).send({
+        error: {
+          code: 405,
+          message: "Wrong HTTP method"
+        }
+      });
       break;
   }
 };
