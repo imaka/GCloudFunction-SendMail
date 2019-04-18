@@ -1,7 +1,7 @@
 {
   "name": "gcloudfunction-sendmail",
   "version": "1.0.0",
-  "description": "Send emails with SendGrid from Google Cloud",
+  "description": "Send emails with Nodemailer from Google Cloud",
   "author": "Diego Perez <dperezmartinez@gmail.com>",
   "license": "MIT",
   "main": "index.js",
