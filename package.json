@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Send emails with Nodemailer from Google Cloud",
   "author": "Diego Perez <dperezmartinez@gmail.com>",
+  "homepage": "https://imaka.github.io",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
