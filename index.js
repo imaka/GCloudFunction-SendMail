@@ -6,14 +6,16 @@
  * @param {!express:Response} res HTTP response context.
  */
 function handlePOST(req, res) {
-  res.set("Access-Control-Allow-Origin", "*");
+  if (checkAllowedOrigin(req.headers.origin)) {
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+  }
 
   if (!req.body.subject || !req.body.text) {
     res.status(422).send({
       error: {
         code: 422,
-        message: "Missing arguments"
-      }
+        message: "Missing arguments",
+      },
     });
     return;
   }
@@ -28,8 +30,8 @@ function handlePOST(req, res) {
       type: "OAuth2",
       user: process.env.GMAIL_ADDRESS,
       serviceClient: process.env.CLIENT_ID,
-      privateKey: process.env.PRIVATE_KEY.replace(/\\n/g, "\n")
-    }
+      privateKey: process.env.PRIVATE_KEY.replace(/\\n/g, "\n"),
+    },
   });
 
   const mailOptions = {
@@ -37,7 +39,7 @@ function handlePOST(req, res) {
     to: req.body.to || process.env.MAIL_TO,
     bcc: req.body.bcc || process.env.MAIL_BCC,
     subject: req.body.subject,
-    text: req.body.text
+    text: req.body.text,
   };
 
   transporter
@@ -46,16 +48,16 @@ function handlePOST(req, res) {
       res.status(200).send({
         data: {
           code: 200,
-          message: "Mail sent"
-        }
+          message: "Mail sent",
+        },
       });
     })
-    .catch(e => {
+    .catch((e) => {
       res.status(500).send({
         error: {
           code: 500,
-          message: e.toString()
-        }
+          message: e.toString(),
+        },
       });
     });
 }
@@ -70,11 +72,24 @@ function handlePOST(req, res) {
  * @param {!express:Response} res HTTP response context.
  */
 function handleOPTIONS(req, res) {
-  res.set("Access-Control-Allow-Origin", "*");
+  if (checkAllowedOrigin(req.headers.origin)) {
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+  }
+
   res.set("Access-Control-Allow-Methods", "POST");
   res.set("Access-Control-Allow-Headers", "Content-Type");
   res.set("Access-Control-Max-Age", "3600");
   res.status(204).end();
+}
+
+/**
+ * Checks if the HTTP request origin is allowed.
+ *
+ * @param origin HTTP request origin.
+ */
+function checkAllowedOrigin(origin) {
+  const allowedOrigins = process.env.ALLOWED_ORIGINS.split(",");
+  return allowedOrigins.includes(origin);
 }
 
 /**
@@ -95,8 +110,8 @@ exports.sendMail = (req, res) => {
       res.status(405).send({
         error: {
           code: 405,
-          message: "Wrong HTTP method"
-        }
+          message: "Wrong HTTP method",
+        },
       });
       break;
   }
