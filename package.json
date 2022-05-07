@@ -10,6 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "nodemailer": "^6.4.16"
+    "nodemailer": "^6.6.1"
   }
 }
